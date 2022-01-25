@@ -4646,6 +4646,9 @@ fn (mut g Gen) if_expr(node ast.IfExpr) {
 			}
 		}
 	}
+	if is_guard {
+		println('$guard_vars')
+	}
 	for i, branch in node.branches {
 		if i > 0 {
 			g.write('} else ')
@@ -4674,13 +4677,13 @@ fn (mut g Gen) if_expr(node ast.IfExpr) {
 						g.expr(branch.cond.expr)
 						g.writeln(', ${var_name}.state == 0) {')
 					}
-					if short_opt || branch.cond.var_name != '_' {
+					if short_opt || branch.cond.var_names[0] != '_' {
 						base_type := g.base_type(branch.cond.expr_type)
 						if short_opt {
-							cond_var_name := if branch.cond.var_name == '_' {
+							cond_var_name := if branch.cond.var_names[0] == '_' {
 								'_dummy_${g.tmp_count + 1}'
 							} else {
-								branch.cond.var_name
+								branch.cond.var_names[0]
 							}
 							g.write('\t$base_type $cond_var_name = ')
 							g.expr(branch.cond.expr)
@@ -4689,11 +4692,11 @@ fn (mut g Gen) if_expr(node ast.IfExpr) {
 							mut is_auto_heap := false
 							if branch.stmts.len > 0 {
 								scope := g.file.scope.innermost(ast.Node(branch.stmts[branch.stmts.len - 1]).position().pos)
-								if v := scope.find_var(branch.cond.var_name) {
+								if v := scope.find_var(branch.cond.var_names[0]) {
 									is_auto_heap = v.is_auto_heap
 								}
 							}
-							left_var_name := c_name(branch.cond.var_name)
+							left_var_name := c_name(branch.cond.var_names[0])
 							if is_auto_heap {
 								g.writeln('\t$base_type* $left_var_name = HEAP($base_type, *($base_type*)${var_name}.data);')
 							} else {

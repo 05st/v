@@ -456,7 +456,7 @@ pub fn (x Expr) str() string {
 			} + ')'
 		}
 		IfGuardExpr {
-			return x.var_name + ' := ' + x.expr.str()
+			return '$x.var_names := ' + x.expr.str()
 		}
 		StructInit {
 			sname := global_table.sym(x.typ).name

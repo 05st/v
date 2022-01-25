@@ -1420,9 +1420,9 @@ pub mut:
 // `if [x := opt()] {`
 pub struct IfGuardExpr {
 pub:
-	var_name string
-	is_mut   bool
-	pos      token.Position
+	var_names []string
+	is_muts	  []bool
+	pos       token.Position
 pub mut:
 	expr      Expr
 	expr_type Type
