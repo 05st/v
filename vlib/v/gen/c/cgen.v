@@ -4646,9 +4646,6 @@ fn (mut g Gen) if_expr(node ast.IfExpr) {
 			}
 		}
 	}
-	if is_guard {
-		println('$guard_vars')
-	}
 	for i, branch in node.branches {
 		if i > 0 {
 			g.write('} else ')
